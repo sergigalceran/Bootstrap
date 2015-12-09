@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="Content-Language" content="es-es" />
+  <title>API oficial Recipe Service</title>
+  <link href="reset.css" rel="stylesheet" type="text/css" />
+  <link href="documentation.css" media="screen" rel="stylesheet" type="text/css">
+  <link href="pygments.css" media="screen" rel="stylesheet" type="text/css">
+</head>
+
+<body class="api">
+    <div id="wrapper">
+    <div class="content">
+
+
+<h1 id="overview">Overview</h1>
+
+<p>Este documento describe los recursos que componen la API oficial Recipe Service.</p>
+
+<h2>Instalación</h2>
+
+<p>Dejar <code>exam-service.jar</code> y <code>exam-service_lib</code> en el mismo directorio. Se ejecuta desde un terminal <code>java -jar exam-service.jar</code></p>
+
+<pre class="terminal">
+$ java -jar exam-service.jar 
+May 09, 2014 7:45:33 AM org.glassfish.jersey.server.ApplicationHandler initialize
+INFO: Initiating Jersey application, version Jersey: 2.8 2014-04-29 01:25:26...
+May 09, 2014 7:45:34 AM org.glassfish.grizzly.http.server.NetworkListener start
+INFO: Started listener bound to [localhost:8080]
+May 09, 2014 7:45:34 AM org.glassfish.grizzly.http.server.HttpServer start
+INFO: [HttpServer] Started.
+Jersey app started with WADL available at http://localhost:8080/myapp/application.wadl
+Hit enter to stop it...
+</pre>
+
+<h2>Esquema</h2>
+
+
+<p>Todo el acceso es API es a través de HTTP, y se accede desde el dominio <code>localhost:8080</code>. Todos los datos se envían y se reciben como JSON. Para verificar que funciona <code>http://localhost:8080/myapp/recipe</code>
+</p>
+
+<pre><code>HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Wed, 18 Nov 2015 18:10:48 GMT
+Content-Length: 61
+
+{"author":"Test Author","difficulty":0,"title":"Test Recipe"}
+</code></pre>
+
+<p>Todas las marcas de tiempo se devuelven en formato ISO 8601:</p>
+
+<pre><code>YYYY-MM-DDTHH:MM:SSZ
+</code></pre>
+
+<h2>Errores</h2>
+
+<p>Hay diferentes tipos posibles de errores de cliente en las llamadas al API. Todos son mostrados con el correspondiente codigo de error de HTTP.</p>
+
+<pre><code>HTTP/1.1 404 Not Found
+Date: Fri, 09 May 2014 05:57:39 GMT
+Content-Length: 0
+</code></pre>
+
+<h2>Create, read, update and delete (CRUD)</h2>
+
+
+<table>
+<thead><tr>
+<th>Operación</th> <th>Metodo HTTP</th> </tr></thead>
+<tbody>
+<tr>
+<tr>
+<td><code>GET</code></td>
+      <td>Se utiliza para recuperar los recursos. </td>
+    </tr>
+<tr>
+<td><code>POST</code></td>
+      <td>Se utiliza para la creación de recursos.</td>
+    </tr>
+<tr>
+<tr>
+<td><code>PUT</code></td>
+      <td>Se utiliza para la sustitución de recursos.</td>
+    </tr>
+<tr>
+<td><code>DELETE</code></td>
+      <td>Se utiliza para eliminar los recursos.</td>
+    </tr>
+</tbody>
+</table>
+
+<h2>Recurso </h2>
+    <table>
+        <thead><tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr></thead>
+        <tbody>
+        <tr>
+            <td><code>title</code></td>
+            <td><code>string</code></td>
+            <td>
+                <strong>Required</strong>. Título de la receta.</td>
+        </tr>
+        <tr>
+            <td><code>author</code></td>
+            <td><code>string</code></td>
+            <td>
+                <strong>Required</strong>. Autor de la receta.</td>
+        </tr>
+        <td>
+            <code>difficulty</code>
+        </td>
+        <td>
+            <code>integer</code>
+        </td>
+        <td>Dificultad de la receta entre 0 y 10.</td>
+        </tr>
+        <tr>
+            <td><code>ingredients</code></td>
+            <td><code>string[]</code></td>
+            <td>Ingredientes necesarios para la receta.</td>
+        </tr>
+        <tr>
+            <td><code>steps</code></td>
+            <td><code>string</code></td>
+            <td>Pasos para realizar la receta.</td>
+        </tr>
+        <tr>
+            <td><code>creationdate</code></td>
+            <td><code>date</code></td>
+            <td>Fecha de creación de la receta en formato ISO 8601: <code>YYYY-MM-DDTHH:MM:SS</code>. Si no se indica, se crea con la fecha actual.</td>
+        </tr>
+        <tr>
+
+        <tr>
+
+        </tbody>
+    </table>
+
+
+<h2>Recupera la receta de prueba</h2>
+
+<pre><code>GET /myapp/recipe
+</code></pre>
+
+<pre class="headers"><code>HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Wed, 18 Nov 2015 18:10:48 GMT
+Content-Length: 61</code></pre>
+
+<pre><code class="language-javascript"><span class="p">
+{
+    "author":"Test Author",
+    "difficulty":0,
+    "title":"Test Recipe"
+}
+</span></code></pre>
+
+
+<h2>Lista tus recetas</h2>
+
+<pre><code>GET /myapp/recipe/list
+</code></pre>
+
+
+<pre class="headers"><code>HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Wed, 18 Nov 2015 18:14:33 GMT
+Content-Length: 445</code></pre>
+
+<pre><code class="language-javascript"><span class="p">
+{
+    "recipes":[
+        {
+            "author":"Juan",
+            "creationDate":"2015-11-18T19:11:50.719",
+            "difficulty":3,
+            "ingredients":[
+                "Pizza de Casa Tarradellas",
+                "Callos Litoral"
+            ],
+            "preparation":"Vertemos los callos encima de la pizza y al horno",
+            "title":"Pizza de Callos"
+        },
+        {
+            "author":"Roc",
+            "creationDate":"2015-11-18T19:11:50.719",
+            "difficulty":1,
+            "ingredients":[
+                "Huevo",
+                "Patatas",
+                "Aceite"
+            ],
+            "preparation":"Todo a la sarten y luego a darle la vuelta",
+            "title":"Tortilla de Patatas"
+        }
+    ]
+}
+</span></code></pre>
+
+<h2>Recupera una receta</h2>
+
+<pre><code>GET /myapp/receta/:title
+</code></pre>
+
+<pre class="headers"><code>HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Wed, 18 Nov 2015 18:20:14 GMT
+Content-Length: 226</code></pre>
+<pre><code class="language-javascript"><span class="p">
+{
+    "author":"Juan",
+    "creationDate":"2015-11-18T19:11:50.719",
+    "difficulty":3,
+    "ingredients":[
+        "Pizza de Casa Tarradellas",
+        "Callos Litoral"
+    ],
+    "preparation":"Vertemos los callos encima de la pizza y al horno",
+    "title":"Pizza de Callos"
+}
+</span></code></pre>
+
+Si utilizas CURL para hacer pruebas recuerda que hay que escapar el espacio como %20 es decir:
+<pre><code>curl -D - http://localhost:8080/myapp/recipe/Pizza%20de%20Callos</code></pre>
+
+<h2>Borrar una receta</h2>
+
+<pre><code>DELETE /myapp/recipe/:title
+</code></pre>
+
+<h3>Response</h3>
+
+<pre class="headers no-response"><code>HTTP/1.1 202 Accepted
+</code></pre>
+
+<h2 id="create">Crear una receta</h2>
+
+<pre><code>POST /myapp/recipe
+</code></pre>
+        
+<h2 id="create">Actualizar una receta</h2>
+
+<pre><code>POST /myapp/recipe/:title
+</code></pre>
+
+<p>El <code>:title</code> ha de coincidir con el indicado en el JSON.</p>
+
+
+    </div>
+    </div>
+
+</body>
+</html>
